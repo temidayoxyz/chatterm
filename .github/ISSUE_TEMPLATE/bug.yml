@@ -1,0 +1,55 @@
+name: Bug report
+description: Report reproducible Chatterm behavior
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include secrets or private terminal output. Use the Security tab for vulnerabilities.
+  - type: input
+    id: version
+    attributes:
+      label: Chatterm version
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [Windows, macOS Apple silicon, macOS Intel, Linux, Other]
+    validations:
+      required: true
+  - type: input
+    id: shell
+    attributes:
+      label: Shell and version
+      placeholder: PowerShell 7.5
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction
+      description: Give the smallest safe sequence that reproduces the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or non-sensitive logs
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I removed credentials and private terminal history.
+          required: true
+        - label: I searched existing issues.
+          required: true

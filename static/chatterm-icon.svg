@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Chatterm">
+  <rect width="512" height="512" rx="112" fill="#10131b"/>
+  <path d="M130 154l92 102-92 102" fill="none" stroke="#afa7ff" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M244 358h132" fill="none" stroke="#e8ecf3" stroke-width="42" stroke-linecap="round"/>
+  <circle cx="382" cy="154" r="24" fill="#78cdb5"/>
+  <path d="M382 180v86" fill="none" stroke="#78cdb5" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="382" cy="298" r="24" fill="#e6a46c"/>
+</svg>
