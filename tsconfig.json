@@ -10,10 +10,20 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "bundler"
-  }
+  },
+  // Copied from .svelte-kit/tsconfig.json (TypeScript does not merge these)
+  // plus the PTY integration harness, which targets Node and runs under
+  // vitest with its own environment rather than as app code.
+  "exclude": [
+    "node_modules/**",
+    "src/service-worker.js",
+    "src/service-worker/**/*.js",
+    "src/service-worker.ts",
+    "src/service-worker/**/*.ts",
+    "src/service-worker.d.ts",
+    "src/service-worker/**/*.d.ts",
+    "src/lib/thread-mode.e2e.test.ts"
+  ]
   // Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias
-  // except $lib which is handled by https://svelte.dev/docs/kit/configuration#files
-  //
-  // If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes
-  // from the referenced tsconfig.json - TypeScript does not merge them in
+  // except $lib which is handled by https://svelte.dev/kit/configuration#files
 }

@@ -12,9 +12,10 @@
     searchQuery?: string;
     onInput: (data: string) => void;
     onResize: (rows: number, cols: number) => void;
+    onSurfaceActive: (id: string, active: boolean) => void;
   }
 
-  let { session, fontSize, searchQuery = "", onInput, onResize }: Props = $props();
+  let { session, fontSize, searchQuery = "", onInput, onResize, onSurfaceActive }: Props = $props();
   let host: HTMLDivElement;
   let terminal: Terminal | undefined;
   let fitAddon: FitAddon | undefined;
@@ -65,8 +66,10 @@
   function replay(next: UiSession | undefined) {
     if (!terminal || !next) return;
     if (sessionId !== next.id) {
+      if (sessionId) onSurfaceActive(sessionId, false);
       terminal.reset();
       sessionId = next.id;
+      onSurfaceActive(sessionId, true);
       writtenChunks = 0;
       decoder.decode();
     }
@@ -119,6 +122,7 @@
 
     return () => {
       observer.disconnect();
+      if (sessionId) onSurfaceActive(sessionId, false);
       terminal?.dispose();
       terminal = undefined;
     };

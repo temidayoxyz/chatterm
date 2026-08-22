@@ -43,7 +43,7 @@
       <button class="mode-button active" onclick={() => onMode("thread")}><Blocks size={15} />Thread mode</button>
     {/if}
     <span class:running={session?.status === "running"} class="process-state">
-      {#if session?.status === "running"}<span class="pulse"></span>Running{:else}<Check size={13} />Ready{/if}
+      {#if session?.status === "running"}<span class="pulse"></span>Running{:else if session?.status === "starting"}Starting…{:else}<Check size={13} />Ready{/if}
     </span>
     <button class:active={session?.saved} class="icon-button" onclick={onSave} title={session?.saved ? "Session saved" : "Save session"} aria-label="Save session"><Bookmark size={16} /></button>
     <button class="icon-button" onclick={onSearch} title="Search" aria-label="Search"><Search size={16} /></button>

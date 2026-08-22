@@ -1,6 +1,8 @@
-# Chatterm v0.1.0 — First public release
+# Chatterm v0.1.1 — Thread mode reliability
 
 Chatterm makes the command line easier to read without replacing it. One native shell can move between structured command blocks, a conversational layout, and a full terminal surface.
+
+v0.1.1 fixes the biggest v0.1.0 defect: in Thread mode, session events reached the interface with mismatched field names and were silently dropped, so commands appeared to run but never showed output or exit status — and on Windows PowerShell the shell could stall entirely before showing a prompt. Events are now matched end to end, Chatterm itself answers the terminal queries shells rely on when no terminal surface is attached, and a still-starting shell is labeled "Starting…" instead of "Ready".
 
 ## Highlights
 

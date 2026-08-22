@@ -18,6 +18,7 @@
     writeToSession,
   } from "$lib/api";
   import { ChattermProtocolParser, stripTerminalControl, type ProtocolEvent } from "$lib/protocol";
+  import { TerminalQueryResponder } from "$lib/terminal-host";
   import type {
     AppMode,
     AppSettings,
@@ -50,6 +51,8 @@
 
   const parsers = new Map<string, ChattermProtocolParser>();
   const decoders = new Map<string, TextDecoder>();
+  const responders = new Map<string, TerminalQueryResponder>();
+  const liveSurfaces = new Set<string>();
   let activeSession = $derived(sessions.find((session) => session.id === activeId));
 
   function updateSession(id: string, updater: (session: UiSession) => UiSession) {
@@ -147,11 +150,32 @@
     }
   }
 
+  function surfaceActive(id: string, active: boolean) {
+    if (active) liveSurfaces.add(id);
+    else liveSurfaces.delete(id);
+  }
+
+  function answerTerminalQueries(id: string, raw: string) {
+    if (liveSurfaces.has(id)) {
+      // A live terminal surface answers these queries itself.
+      responders.get(id)?.reset();
+      return;
+    }
+    const responder = responders.get(id) ?? new TerminalQueryResponder();
+    responders.set(id, responder);
+    for (const reply of responder.push(raw)) {
+      writeToSession(id, reply).catch((error) => {
+        console.error("Unable to answer a terminal query", error);
+      });
+    }
+  }
+
   function handleSessionEvent(event: SessionEvent) {
     if (event.event === "data") {
       const decoder = decoders.get(event.sessionId) ?? new TextDecoder();
       decoders.set(event.sessionId, decoder);
       const raw = decoder.decode(new Uint8Array(event.data), { stream: true });
+      answerTerminalQueries(event.sessionId, raw);
       detectInteractive(event.sessionId, raw);
       const parser = parsers.get(event.sessionId) ?? new ChattermProtocolParser();
       parsers.set(event.sessionId, parser);
@@ -212,7 +236,9 @@
     if (session && !session.readOnly) await closeSession(id).catch(() => undefined);
     parsers.delete(id);
     decoders.delete(id);
-    sessions = sessions.filter((item) => item.id !== id);
+    responders.delete(id);
+    liveSurfaces.delete(id);
+    sessions = sessions.filter((session) => session.id !== id);
     if (activeId === id) activeId = sessions.at(-1)?.id;
     if (sessions.length === 0) await newSession();
   }
@@ -371,6 +397,7 @@
         {searchQuery}
         onInput={(data) => activeSession && !activeSession.readOnly && writeToSession(activeSession.id, data)}
         onResize={(rows, cols) => activeSession && !activeSession.readOnly && resizeSession(activeSession.id, rows, cols)}
+        onSurfaceActive={surfaceActive}
         onThread={() => mode = activeSession?.enhancedThreads === false ? "focus" : "thread"}
       />
     {/if}

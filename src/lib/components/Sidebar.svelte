@@ -42,6 +42,7 @@
     if (session.error) return "Error";
     if (session.status === "running") return "Running";
     if (session.status === "exited") return "Exited";
+    if (session.status === "starting") return "Starting";
     return "Ready";
   }
 </script>

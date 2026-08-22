@@ -61,7 +61,7 @@ jobs:
           releaseBody: |
             One native terminal, three ways to work: execution Blocks, Chat, and full Focus mode.
 
-            Chatterm v0.1.0 is local-first, explicitly saved, and ships without accounts, telemetry, analytics, cloud sync, or built-in AI. See `RELEASE_NOTES.md` for shell support, unsigned-package installation notes, and known boundaries.
+            v0.1.1 fixes commands hanging with no response in Thread mode: session events now reach the interface reliably, shells that query their terminal get answers even without an attached terminal surface, and a starting shell is no longer mislabeled "Ready". Local-first as ever: no accounts, telemetry, analytics, cloud sync, or built-in AI. See `RELEASE_NOTES.md` for details.
           generateReleaseNotes: true
           releaseDraft: false
           prerelease: false

@@ -9,14 +9,15 @@
     searchQuery?: string;
     onInput: (data: string) => void;
     onResize: (rows: number, cols: number) => void;
+    onSurfaceActive: (id: string, active: boolean) => void;
     onThread: () => void;
   }
 
-  let { session, fontSize, searchQuery = "", onInput, onResize, onThread }: Props = $props();
+  let { session, fontSize, searchQuery = "", onInput, onResize, onSurfaceActive, onThread }: Props = $props();
 </script>
 
 <section class="focus-view">
-  <TerminalSurface {session} {fontSize} {searchQuery} {onInput} {onResize} />
+  <TerminalSurface {session} {fontSize} {searchQuery} {onInput} {onResize} {onSurfaceActive} />
   <div class="focus-badge"><Maximize2 size={12} /><span>Focus</span></div>
   <button class="thread-return" onclick={onThread} title="Return to Thread mode"><Blocks size={14} />Thread</button>
 </section>

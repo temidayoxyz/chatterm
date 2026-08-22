@@ -32,8 +32,13 @@ pub struct SessionInfo {
 #[derive(Debug, Clone, Serialize)]
 #[serde(tag = "event", rename_all = "camelCase")]
 pub enum SessionEvent {
+    // The enum-level rename covers variant names only; each variant needs its
+    // own attribute so inner fields reach the frontend as camelCase.
+    #[serde(rename_all = "camelCase")]
     Data { session_id: String, data: Vec<u8> },
+    #[serde(rename_all = "camelCase")]
     Exit { session_id: String, code: u32 },
+    #[serde(rename_all = "camelCase")]
     Error { session_id: String, message: String },
 }
 
@@ -81,4 +86,38 @@ pub struct SavedSessionDetail {
     pub created_at: String,
     pub saved_at: String,
     pub blocks: Vec<SavedBlock>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // The frontend reads event.sessionId/event.data; a regression to
+    // snake_case fields would silently drop every session event.
+    #[test]
+    fn session_events_serialize_camel_case_fields() {
+        let data = serde_json::to_string(&SessionEvent::Data {
+            session_id: "s1".into(),
+            data: vec![27, 91, 54, 110],
+        })
+        .expect("serialize data event");
+        assert!(data.contains(r#""event":"data""#), "{data}");
+        assert!(data.contains(r#""sessionId":"s1""#), "{data}");
+
+        let exit = serde_json::to_string(&SessionEvent::Exit {
+            session_id: "s1".into(),
+            code: 0,
+        })
+        .expect("serialize exit event");
+        assert!(exit.contains(r#""event":"exit""#), "{exit}");
+        assert!(exit.contains(r#""sessionId":"s1""#), "{exit}");
+
+        let error = serde_json::to_string(&SessionEvent::Error {
+            session_id: "s1".into(),
+            message: "boom".into(),
+        })
+        .expect("serialize error event");
+        assert!(error.contains(r#""event":"error""#), "{error}");
+        assert!(error.contains(r#""sessionId":"s1""#), "{error}");
+    }
 }
